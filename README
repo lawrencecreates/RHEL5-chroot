@@ -18,10 +18,15 @@ To create an empty chroot with no installed files:
 
 To install the base RPMs for RHEL5:
 
-     chroot-tool install acl attr authconfig bc bind-utils bzip2 \
-                         cyrus-sasl-plain lsof libcgroup quota rhel-instnum \
-                         cpuspeed dos2unix m2crypto sssd nc prctl redhat-lsb \
-                         setarch time tree unix2dos unzip wget which zip zlib
+  ./chroot-tool install python rpm yum python gcc make autoconf zlib-devel bzip2-devel openssl-devel ncurses-devel wget sqlite sqlite-devel 
+
+setup the resolv.conf :
+  cp /etc/resolv.conf /opt/vhost/chroot/sl5-v1/etc/
+
+Install  mezzanine :
+  git clone git@github.com:lawrencecreates/mezzanine.git
+  mv mezzanine/ /opt/vhost/chroot/sl5-v1/root/
+
 
 That list is customized for our site; adjust for yours.
 
@@ -54,3 +59,38 @@ Second, you will need to decide what yum repositories to enable for the chroot
 (these are necessarily different from the system ones!).  You can configure
 yum by editing the file /etc/chroot-tool/yum.conf
 
+
+
+
+http://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz
+./configure --prefix=/usr/local
+
+
+
+Inside the chroot :
+
+   19  wget http://www.python.org/ftp/python/2.7.5/Python-2.7.5.tgz
+   20  tar xzf Python-2.7.5.tgz 
+   21  cd Python-2.7.5
+   24  ./configure --prefix=/usr/local
+   25  make && make altinstall
+   27  cd ..
+   30  wget --no-check-certificate  http://pypi.python.org/packages/source/d/distribute/distribute-0.6.27.tar.gz
+   31  tar xf distribute-0.6.27.tar.gz 
+   32  cd distribute-0.6.27
+   33  python2.7 setup.py install
+   34  /usr/local/bin/easy_install-2.7 virtualenv
+
+   40  virtualenv VENV
+   43  . ./activate
+
+   46  cd ..
+   48  cd ..
+   50   git clone git@github.com:lawrencecreates/mezzanine.git
+   51  cd mezzanine/
+   54  python setup.py install
+
+
+   58  mezzanine-project lawrence_creates
+   59  cd lawrence_creates/
+   65  python manage.py createdb --noinput
